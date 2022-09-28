@@ -1,6 +1,7 @@
 import sqlite3
 from config import ORIGIN_DATA
 
+
 def select_all():
     conn = sqlite3.connect(ORIGIN_DATA)
     cur = conn.cursor()
@@ -18,11 +19,8 @@ def select_all():
             posicion_columna += 1
         resultado.append(d)
 
-    conn.close()
-
     """
-    Comento esto porque me lo ha pedido Cristian
-
+    Es lo mismo que los dos FOR de arriba:
     for fila in filas:
         d = {}
         for posicion, campo in enumerate(columnas):
@@ -30,14 +28,22 @@ def select_all():
         resultado.append(d)
     """
 
-
     return resultado
 
 def insert(registro):
     """
-    INSERT INTO movements (date, concept, quantity) values (?, ?, ?)
+    INSERT INTO moviments(date,concept,quantity) values(?,?,?)
+    params
 
-    params:     cur.execute("INSERT INTO movements (date, concept, quantity) values (?, ?, ?)", ['2022-04-08', 'Cumple', -80])
+    cur.execute("INSERT INTO moviments(date,concept,quantity) values(?,?,?), ['20022-04-08','cumple',-80]")
 
-    conn.commit() antes de hacer el conn.close()
+    importante 
+    con.commit() antes de hacer el con.close()
     """
+
+    con =sqlite3.connect(ORIGIN_DATA)
+    cur = con.cursor()
+    cur.execute("INSERT INTO movements(date,concept,quantity) values(?,?,?)",(registro[0],registro[1],registro[2]))
+
+    con.commit()
+    con.close()
