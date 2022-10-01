@@ -2,3 +2,4 @@
 data/
 entorno_virtual/
 .env
+.config.py

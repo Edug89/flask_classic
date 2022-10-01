@@ -1,7 +1,6 @@
 import sqlite3
 from config import ORIGIN_DATA
 
-
 def select_all():
     conn = sqlite3.connect(ORIGIN_DATA)
     cur = conn.cursor()
@@ -18,6 +17,7 @@ def select_all():
             d[campo[0]] = fila[posicion_columna]
             posicion_columna += 1
         resultado.append(d)
+    conn.close()
 
     """
     Es lo mismo que los dos FOR de arriba:
@@ -43,7 +43,41 @@ def insert(registro):
 
     con =sqlite3.connect(ORIGIN_DATA)
     cur = con.cursor()
-    cur.execute("INSERT INTO movements(date,concept,quantity) values(?,?,?)",(registro[0],registro[1],registro[2]))
+    cur.execute("INSERT INTO movements(date,concept,quantity) values(?,?,?)",registro)
 
+    con.commit()
+    con.close()
+
+
+def select_by(id):
+    """
+    Devolverá un registro con el id de la entrada o vacío si no lo encuentra
+    ORIGIN_DATA
+    """
+    #print(id) #TODO se lo he visto a Enric pero no le veo cambio.
+    con =sqlite3.connect(ORIGIN_DATA)
+    cur = con.cursor()
+    result = cur.execute("SELECT id, date, concept, quantity FROM movements WHERE id=? " , (id,))
+    filas = result.fetchall()
+    con.close()
+    return filas[0]
+
+
+def delete_by(id):
+    """
+    Borrará el registro cuyo id coincide con el de la entrada
+    ORIGIN_DATA
+    """
+    con =sqlite3.connect(ORIGIN_DATA)
+    cur = con.cursor()
+    result = cur.execute("DELETE FROM movements WHERE id=? " , id)
+    con.commit()
+    con.close()
+
+
+def update_by(registro_mod):
+    con =sqlite3.connect(ORIGIN_DATA)
+    cur = con.cursor()
+    result = cur.execute("UPDATE movements SET date=?,concept=?,quantity=? WHERE id=?; " , registro_mod)
     con.commit()
     con.close()

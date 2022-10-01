@@ -5,9 +5,15 @@ header, footer {
     font-weight: bold;
 }
 
-body{
+body {
     min-height: 100vh;
     display: grid;
     grid-template-rows: auto 50px 1fr auto;
     margin: 0;
+}
+
+p.error {
+    color: red;
+    font-weight: bold;
+    font-size: 0.8em;
 }
