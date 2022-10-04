@@ -7,27 +7,40 @@
     <link rel="stylesheet" href="/static/css/pico.css">
     <link rel="stylesheet" href="/static/css/styles.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+</head>
 <body>
     <header>
-    <div class="container">
-        Mini Kakebo
-    </div>    
+        <div class="container">
+            Ingresos y Gastos con FORM
+        </div>
     </header>
     <nav class="container">
         <ul>
-            <a href="/"> <li>Inicio</li> </a>
-            <a href="/new"> <li>Alta</li> </a>
+            <li>
+                <a href="/">Inicio</a>
+            </li>
+            <li>
+                <a href="/new">Alta</a>
+            </li>
         </ul>
     </nav>
     <section class="container">
-        {% block content %} {% endblock%}
-        
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}    
+        <article class="messages">
+            {% for msg in messages %}
+            <p class="error">{{ msg }}</p>
+            {% endfor%}
+        </article>
+        {% endif %}
+        {% endwith %}
+    
+        {% block content %}{% endblock %}
     </section>
     <footer>
-    <div class="container">
-        &copy;2022 - EMP
-    </div>
+        <div class="container">
+            &copy; 2022 - EMP
+        </div>
     </footer>
-    
 </body>
 </html>

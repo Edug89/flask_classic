@@ -1,14 +1,7 @@
 import sqlite3
 from config import ORIGIN_DATA
 
-def select_all():
-    conn = sqlite3.connect(ORIGIN_DATA)
-    cur = conn.cursor()
-
-    result = cur.execute("SELECT id, date, concept, quantity from movements order by date;")
-
-    filas = result.fetchall()
-    columnas = result.description
+def filas_to_diccionario(filas, columnas):
     resultado = []
     for fila in filas:
         posicion_columna = 0
@@ -17,10 +10,10 @@ def select_all():
             d[campo[0]] = fila[posicion_columna]
             posicion_columna += 1
         resultado.append(d)
-    conn.close()
 
     """
-    Es lo mismo que los dos FOR de arriba:
+    Comento esto porque me lo ha pedido Cristian
+
     for fila in filas:
         d = {}
         for posicion, campo in enumerate(columnas):
@@ -30,54 +23,55 @@ def select_all():
 
     return resultado
 
-def insert(registro):
-    """
-    INSERT INTO moviments(date,concept,quantity) values(?,?,?)
-    params
+def delete_by(id):
+    conn = sqlite3.connect(ORIGIN_DATA)
+    cur = conn.cursor()
 
-    cur.execute("INSERT INTO moviments(date,concept,quantity) values(?,?,?), ['20022-04-08','cumple',-80]")
+    cur.execute("DELETE FROM movements WHERE id = ?", (id,))
 
-    importante 
-    con.commit() antes de hacer el con.close()
-    """
-
-    con =sqlite3.connect(ORIGIN_DATA)
-    cur = con.cursor()
-    cur.execute("INSERT INTO movements(date,concept,quantity) values(?,?,?)",registro)
-
-    con.commit()
-    con.close()
-
+    conn.commit()
+    conn.close()
 
 def select_by(id):
-    """
-    Devolverá un registro con el id de la entrada o vacío si no lo encuentra
-    ORIGIN_DATA
-    """
-    #print(id) #TODO se lo he visto a Enric pero no le veo cambio.
-    con =sqlite3.connect(ORIGIN_DATA)
-    cur = con.cursor()
-    result = cur.execute("SELECT id, date, concept, quantity FROM movements WHERE id=? " , (id,))
-    filas = result.fetchall()
-    con.close()
-    return filas[0]
+    conn = sqlite3.connect(ORIGIN_DATA)
+    cur = conn.cursor()
+
+    cur.execute("SELECT id, date, concept, quantity from movements WHERE id = ?", (id,))
+
+    resultado = filas_to_diccionario(cur.fetchall(), cur.description)
+ 
+    conn.close()
+
+    if resultado:
+        return resultado[0]
+    return {}
 
 
-def delete_by(id):
-    """
-    Borrará el registro cuyo id coincide con el de la entrada
-    ORIGIN_DATA
-    """
-    con =sqlite3.connect(ORIGIN_DATA)
-    cur = con.cursor()
-    result = cur.execute("DELETE FROM movements WHERE id=? " , id)
-    con.commit()
-    con.close()
 
 
-def update_by(registro_mod):
-    con =sqlite3.connect(ORIGIN_DATA)
-    cur = con.cursor()
-    result = cur.execute("UPDATE movements SET date=?,concept=?,quantity=? WHERE id=?; " , registro_mod)
-    con.commit()
-    con.close()
+def select_all():
+    conn = sqlite3.connect(ORIGIN_DATA)
+    cur = conn.cursor()
+
+    cur.execute("SELECT id, date, concept, quantity from movements order by date;")
+
+    resultado = filas_to_diccionario(cur.fetchall(), cur.description)
+
+    conn.close()
+
+    return resultado
+
+def insert(registro):
+    """
+    INSERT INTO movements (date, concept, quantity) values (?, ?, ?)
+
+    params:     cur.execute("INSERT INTO movements (date, concept, quantity) values (?, ?, ?)", ['2022-04-08', 'Cumple', -80])
+
+    conn.commit() antes de hacer el conn.close()
+    """
+    conn = sqlite3.connect(ORIGIN_DATA)
+    cur = conn.cursor()
+
+    cur.execute("INSERT INTO movements (date, concept, quantity) values (?, ?, ?);", registro)
+    conn.commit()
+    conn.close()

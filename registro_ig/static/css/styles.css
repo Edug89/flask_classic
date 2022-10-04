@@ -17,3 +17,13 @@ p.error {
     font-weight: bold;
     font-size: 0.8em;
 }
+
+.number {
+    text-align: right;
+}
+
+.return {
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+}
