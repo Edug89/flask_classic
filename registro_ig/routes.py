@@ -3,13 +3,20 @@ from registro_ig import app
 from registro_ig.models import select_all, insert, select_by, delete_by
 from registro_ig.forms import MovementForm
 from datetime import date
+import sqlite3
 
 @app.route("/")
 def index():
     # consultar todos los movimientos de la BASE DE DATOS
-    registros = select_all()
-    return render_template("index.html", pageTitle="Todos", 
+    try:
+        registros = select_all()
+        return render_template("index.html", pageTitle="Todos", 
                            data=registros)
+    except sqlite3.Error as e:
+        flash("Se ha producido un error en la base de datos, contacte con el administrador")
+        return render_template("index.html", pageTitle="Todos", data =[])
+
+
 
 def validaFormulario(camposFormulario):
     errores = []
